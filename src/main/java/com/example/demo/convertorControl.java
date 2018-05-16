@@ -42,14 +42,29 @@ public class convertorControl {
             System.out.println(jsonArray.size());
 
             Iterator<JSONArray> iterator = jsonArray.iterator();
+            JSONObject configuration = null;
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("<configuration>\n");
             while(iterator.hasNext()){
                 JSONObject temp = JSONObject.fromObject(iterator.next());
                 System.out.println(temp.get("href"));
                 System.out.println(temp.get("Config"));
                 System.out.println(temp.get("properties"));
-                JSONObject configuration = JSONObject.fromObject(temp.get("properties"));
+                configuration = JSONObject.fromObject(temp.get("properties"));
                 System.out.println(configuration.size());
+                Iterator<JSONObject.Entry<String, String>> configItr = configuration.entrySet().iterator();
+                while(configItr.hasNext()){
+                    JSONObject.Entry<String, String> property = configItr.next();
+                    System.out.println("<name>" + property.getKey().trim() + "</name>");
+                    System.out.println("<value>" + property.getValue().trim() + "</value>");
+                    stringBuilder.append("   <property>\n");
+                    stringBuilder.append("      <name>" + property.getKey().trim() + "</name>\n");
+                    stringBuilder.append("      <value>" + property.getValue().trim() + "</value>\n");
+                    stringBuilder.append("   </property>\n");
+                }
             }
+            stringBuilder.append("</configuration>");
+            xmlSource = stringBuilder.toString();
 
             //jsonObject.getJSONArray("properties");
 //            JsonFactory factory =  new JsonFactory();
@@ -62,8 +77,9 @@ public class convertorControl {
 //                Map.Entry<String,JsonNode> field = fieldsIterator.next();
 //                System.out.println("Key: " + field.getKey() + "\tValue:" + field.getValue());
 //            }
-            XMLSerializer xmlSerializer = new XMLSerializer();
-            xmlSource = xmlSerializer.write(jsonObject);
+            //XMLSerializer xmlSerializer = new XMLSerializer();
+            //xmlSource = xmlSerializer.write(configuration);
+
 
             /* print Json array test*/
         }catch(Exception ex){
